@@ -99,7 +99,8 @@ export type ScenarioFeatureActions =
   | "removeMedia"
   | "copyAsGeoJson";
 
-export type ScenarioEventAction = "delete" | "changeTime" | "editMeta" | "editMedia";
+export type ScenarioEventAction =
+  "delete" | "changeTime" | "editMeta" | "editMedia" | "setCamera" | "clearCamera";
 
 export type UiAction = "showKeyboardShortcuts" | "showSearch";
 

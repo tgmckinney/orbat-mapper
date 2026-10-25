@@ -6,9 +6,11 @@ import { activeScenarioKey, timeModalKey } from "@/components/injects";
 import { useSelectedItems } from "@/stores/selectedStore";
 import { useUiStore, useWidthStore } from "@/stores/uiStore";
 import { useMainToolbarStore } from "@/stores/mainToolbarStore";
+import { usePresenterStore } from "@/stores/presenterStore";
 import { isGeoSearchAvailable } from "@/utils/runtimeEnvironment";
 
 export function useScenarioMapModeController(resizeMap: () => void) {
+  const presenter = usePresenterStore();
   const activeScenario = injectStrict(activeScenarioKey);
   const { getModalTimestamp } = injectStrict(timeModalKey);
 
@@ -65,6 +67,7 @@ export function useScenarioMapModeController(resizeMap: () => void) {
       detailsWidth,
       () => ui.detailsPanelMode,
       isMobile,
+      () => presenter.active,
     ],
     () => {
       nextTick(() => resizeMap());

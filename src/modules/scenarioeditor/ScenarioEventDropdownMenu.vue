@@ -4,8 +4,9 @@ import type { MenuItemData } from "@/components/types";
 import type { ScenarioEventAction } from "@/types/constants";
 import { computed } from "vue";
 
-const props = withDefaults(defineProps<{ hideEdit?: boolean }>(), {
+const props = withDefaults(defineProps<{ hideEdit?: boolean; hasCamera?: boolean }>(), {
   hideEdit: false,
+  hasCamera: false,
 });
 
 const emit = defineEmits<{
@@ -19,6 +20,13 @@ const items = computed<MenuItemData<ScenarioEventAction | (() => void)>[]>(() =>
   if (!props.hideEdit) {
     base.push({ label: "Edit", action: "editMeta" as ScenarioEventAction });
     base.push({ label: "Edit media", action: "editMedia" as ScenarioEventAction });
+  }
+  base.push({
+    label: "Set camera to current view",
+    action: "setCamera" as ScenarioEventAction,
+  });
+  if (props.hasCamera) {
+    base.push({ label: "Clear camera", action: "clearCamera" as ScenarioEventAction });
   }
   base.push({ label: "Delete", action: "delete" as ScenarioEventAction });
   return base;
