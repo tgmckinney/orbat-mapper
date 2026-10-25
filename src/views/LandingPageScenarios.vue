@@ -32,6 +32,9 @@ const {
   loadScenario,
 } = useBrowserScenarios();
 
+// georgewyrd fork: the branded landing page hides the bundled demos and names the section.
+const { title = "Scenarios", showDemos = true } = defineProps<{ title?: string; showDemos?: boolean }>();
+
 const router = useRouter();
 
 const newScenario = () => {
@@ -118,7 +121,7 @@ useEventListener("paste", (event: ClipboardEvent) => {
 <template>
   <div class="bg-background relative py-5" data-testid="landing-scenarios">
     <div class="mx-auto max-w-3xl p-4 text-center">
-      <h2 class="text-heading text-3xl font-bold tracking-tight">Scenarios</h2>
+      <h2 class="text-heading text-3xl font-bold tracking-tight">{{ title }}</h2>
     </div>
     <section v-if="storedScenarios.length > 0" class="mx-auto max-w-7xl p-6">
       <StoredScenarioBrowser
@@ -155,10 +158,10 @@ useEventListener("paste", (event: ClipboardEvent) => {
         </template>
       </StoredScenarioBrowser>
     </section>
-    <DemoScenarioNotice />
+    <DemoScenarioNotice v-if="showDemos" />
     <section class="mx-auto max-w-7xl p-6">
       <ul class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        <DemoScenarioCards />
+        <DemoScenarioCards v-if="showDemos" />
         <li class="col-span-1 flex">
           <button
             type="button"

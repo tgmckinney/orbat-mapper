@@ -1,7 +1,8 @@
 import { createRouter, type RouteRecordRaw } from "vue-router";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
-import LandingPage from "../views/LandingPage.vue";
+// georgewyrd fork: our branded landing page (src/views/GeorgewyrdLanding.vue) replaces upstream LandingPage.vue at "/".
+import LandingPage from "../views/GeorgewyrdLanding.vue";
 import {
   CHART_EDIT_MODE_ROUTE,
   MAPLIBRE_ROUTE,
