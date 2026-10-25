@@ -77,6 +77,8 @@ export const mapEditModeShortcuts: KeyboardCategory[] = [
       { shortcut: [["→"], ["space"], ["page down"]], description: "Next event" },
       { shortcut: [["←"], ["page up"]], description: "Previous event" },
       { shortcut: [["p"]], description: "Play/pause" },
+      { shortcut: [["m"]], description: "Mute/unmute narration" },
+      { shortcut: [["r"]], description: "Replay narration" },
       { shortcut: [["f"]], description: "Full screen" },
       { shortcut: [["esc"]], description: "Exit presenter" },
     ],

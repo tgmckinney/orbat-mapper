@@ -4,6 +4,7 @@ import NewSimpleModal from "@/components/NewSimpleModal.vue";
 import { Button } from "@/components/ui/button";
 import { inject, ref } from "vue";
 import { useShareHistory } from "@/composables/scenarioShare";
+import { UPLOAD_SECRET } from "@/composables/shareApi";
 import { activeScenarioKey } from "@/components/injects";
 import InputGroup from "@/components/InputGroup.vue";
 import ToggleField from "@/components/ToggleField.vue";
@@ -46,9 +47,7 @@ async function generateLink() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-ORBAT-SECRET":
-          import.meta.env.VITE_ORBAT_SECRET ||
-          "I9ZJ4z4FDtLFXpvHKIT2TALl7k9BUDRYr5Jj3IBF7A7Jp8KJDOR",
+        "X-ORBAT-SECRET": UPLOAD_SECRET,
       },
       body: JSON.stringify(uploadData),
     });

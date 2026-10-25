@@ -201,6 +201,20 @@ The map controls are in the top-left corner of the map:
 
 - **Globe**: show the map as a globe or as a flat map.
 - **Zoom** and **compass**: the compass shows the rotation and the tilt of the map.
+
+### Narration
+
+An event can have a recorded voice-over. Select the event, and in its details click **Record narration**. Your
+browser asks for access to the microphone. Click **Stop** when you are done, listen to the recording, add a
+transcript if you want, and click **Save narration**. You can also use **Upload audio** to add an audio file that you
+recorded somewhere else. A recording can be up to 5 minutes long.
+
+On orbat.georgewyrd.com, the audio is uploaded and the event keeps a link to it, so shared links and exported files
+play it too. Where there is no upload service, the audio is stored inside the scenario file, which makes the file
+larger. **Re-record**, **Replace** and the delete button change or remove the narration. You can undo these changes.
+
+In presenter mode, the narration starts when the event comes up, and the card shows its progress.
+
 - **Terrain**: set 3D terrain and hillshading to on or off. When you set terrain to on, the map tilts to show the
   relief. When you set it to off, the map becomes flat again. If the button is amber, there is no elevation data.
   Refer to [Terrain and hillshading without an internet connection](offline-use#terrain-and-hillshading-without-an-internet-connection).
@@ -481,7 +495,8 @@ A card in the lower left shows the event title, time, image and description.
   map to the event's location. Events that have the same time each get their own step.
 - **Previous** (**←** or **Page Up**) goes back one event.
 - **Play/Pause** (**P**) moves to the next event automatically. Use **Each** to set how long each event stays on the
-  screen.
+  screen. An event with narration stays until its narration has finished.
+- **Mute** (**M**) turns narration off and on. **R** plays the current event's narration again.
 - **Full screen** (**F**) shows only the map and the card.
 - **Exit** (**Esc**) goes back to the editor.
 
