@@ -108,6 +108,7 @@ const openUrl = (m: BattleMap) =>
         <nav aria-label="Sections" class="gw-root__nav">
           <ul class="gw-nav">
             <li><a :href="`${BATTLES}/`">battles</a></li>
+            <li><a :href="`${BATTLES}/reading/`">poetry and prose</a></li>
             <li><a :href="`${WWW}/scenarios/`">scenarios</a></li>
             <li><a href="https://index.georgewyrd.com/">wargame index</a></li>
             <li><a href="/" aria-current="page">maps</a></li>
