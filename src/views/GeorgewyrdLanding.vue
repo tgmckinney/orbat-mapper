@@ -92,7 +92,11 @@ const openUrl = (m: BattleMap) =>
   <div class="gw gw-root flex h-full flex-col" :class="{ 'gw-root--ready': styled }">
     <header class="gw-masthead">
       <div class="gw-masthead__inner">
-        <a class="gw-brand" :href="`${WWW}/`">
+        <a
+          class="gw-brand"
+          :href="`${WWW}/`"
+          aria-label="Meditations in the Military Arts: home"
+        >
           <img
             class="gw-logo"
             :src="`${DESIGN}/logos/georgewyrd-gw.svg`"
@@ -100,7 +104,6 @@ const openUrl = (m: BattleMap) =>
             width="44"
             height="44"
           />
-          <span class="gw-wordmark">georgewyrd</span>
         </a>
         <nav aria-label="Sections" class="gw-root__nav">
           <ul class="gw-nav">
@@ -158,10 +161,7 @@ const openUrl = (m: BattleMap) =>
           width="32"
           height="32"
         />
-        <p>
-          Part of <a :href="`${WWW}/`">georgewyrd</a>: battles, orders of battle, maps and
-          scenarios for wargamers. Scenarios you build are stored on this computer only.
-        </p>
+        <p>Scenarios you build are stored on this computer only.</p>
         <p>Map engine released under the <a href="/LICENSE.txt">MIT licence</a>.</p>
       </div>
     </footer>
