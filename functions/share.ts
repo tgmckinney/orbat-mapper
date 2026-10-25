@@ -11,10 +11,13 @@ interface Env {
  * Allowed origins:
  * - https://orbat-mapper.app (production)
  * - https://*.orbat-mapper.pages.dev (Cloudflare Pages previews)
+ * - https://orbat.georgewyrd.com and https://*.orbat-georgewyrd.pages.dev (georgewyrd fork)
  */
 function isAllowedOrigin(origin: string | null): boolean {
   if (!origin) return false;
   if (origin === "https://orbat-mapper.app") return true;
+  if (origin === "https://orbat.georgewyrd.com") return true;
+  if (/^https:\/\/[a-z0-9-]+\.orbat-georgewyrd\.pages\.dev$/.test(origin)) return true;
   // Match *.orbat-mapper.pages.dev subdomains
   const pagesDevPattern = /^https:\/\/[a-z0-9-]+\.orbat-mapper\.pages\.dev$/;
   return pagesDevPattern.test(origin);
