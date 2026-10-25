@@ -470,3 +470,24 @@ Right-click the timeline to get more options:
 - Zoom in / Zoom out
 - Add a scenario event at the time that you clicked
 - Hide the timeline
+
+## Presenter
+
+Presenter mode shows the scenario events one at a time, as a guided tour. To start it, click **Present** (the
+presentation icon after **Next Event** in the map toolbar). The side panels, the timeline and the map toolbar go away.
+A card in the lower left shows the event title, time, image and description.
+
+- **Next** (**→**, **Space** or **Page Down**) runs the clock to the next event, so the units move, and then moves the
+  map to the event's location. Events that have the same time each get their own step.
+- **Previous** (**←** or **Page Up**) goes back one event.
+- **Play/Pause** (**P**) moves to the next event automatically. Use **Each** to set how long each event stays on the
+  screen.
+- **Full screen** (**F**) shows only the map and the card.
+- **Exit** (**Esc**) goes back to the editor.
+
+### Event camera
+
+When you go to an event, the map moves to the event's location. To set this location to what you see now, open the
+event's menu (in the **Events** tab or in the event's details) and select **Set camera to current view**. **Clear
+camera** removes it. You can undo both. The camera keeps the area that is visible, but not the rotation or the tilt
+of the map.

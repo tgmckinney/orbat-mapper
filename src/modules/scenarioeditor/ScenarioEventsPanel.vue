@@ -6,6 +6,7 @@ import type { NScenarioEvent } from "@/types/internalModels";
 import PanelHeading from "@/components/PanelHeading.vue";
 import { useTimeFormatStore } from "@/stores/timeFormatStore";
 import ScenarioEventDropdownMenu from "@/modules/scenarioeditor/ScenarioEventDropdownMenu.vue";
+import { useEventCameraActions } from "@/modules/scenarioeditor/eventCamera";
 import type { ScenarioEventAction } from "@/types/constants";
 import { useSelectedItems } from "@/stores/selectedStore";
 import { Button } from "@/components/ui/button";
@@ -38,9 +39,11 @@ function onEventClick(event: NScenarioEvent) {
   emit("event-click", event);
 }
 
+const onCameraAction = useEventCameraActions();
+
 async function onAction(action: ScenarioEventAction, eventId: string) {
   const scenarioEvent = store.state.eventMap[eventId];
-  if (!scenarioEvent) return;
+  if (!scenarioEvent || onCameraAction(action, eventId)) return;
   switch (action) {
     case "changeTime":
       const newTimestamp = await getModalTimestamp(scenarioEvent.startTime, {
@@ -110,7 +113,11 @@ function addEvent() {
             v-if="!hideDropdown"
             class="opacity-0 group-focus-within:opacity-100 group-hover:opacity-100"
           >
-            <ScenarioEventDropdownMenu hide-edit @action="onAction($event, event.id)" />
+            <ScenarioEventDropdownMenu
+              hide-edit
+              :has-camera="!!event.where"
+              @action="onAction($event, event.id)"
+            />
           </div>
         </li>
       </ul>

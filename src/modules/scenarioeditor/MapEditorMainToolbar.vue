@@ -10,6 +10,7 @@ import {
   IconMapMarkerPath,
   IconPencil as DrawIcon,
   IconPlus as AddSymbolIcon,
+  IconPresentationPlay,
   IconRedoVariant as RedoIcon,
   IconRulerSquareCompass as MeasurementIcon,
   IconSkipNext,
@@ -41,6 +42,7 @@ import { Button } from "@/components/ui/button";
 import { CUSTOM_SYMBOL_PREFIX } from "@/config/constants.ts";
 import { getFullUnitSidc, updateSidc } from "@/symbology/helpers.ts";
 import { useRecordingStore } from "@/stores/recordingStore";
+import { usePresenterStore } from "@/stores/presenterStore";
 
 const props = withDefaults(
   defineProps<{
@@ -73,6 +75,7 @@ const emit = defineEmits([
 ]);
 
 const activeScenario = injectStrict(activeScenarioKey);
+const presenter = usePresenterStore();
 const {
   store: { groupUpdate, state },
   unitActions,
@@ -432,6 +435,14 @@ watchEffect(() => {
       >
         <span class="sr-only">Next Event</span>
         <IconSkipNext class="size-5 w-5" aria-hidden="true" />
+      </MainToolbarButton>
+      <MainToolbarButton
+        title="Present the scenario's events"
+        class="hidden sm:flex"
+        @click="presenter.start()"
+      >
+        <span class="sr-only">Present</span>
+        <IconPresentationPlay class="size-5 w-5" aria-hidden="true" />
       </MainToolbarButton>
     </section>
   </nav>

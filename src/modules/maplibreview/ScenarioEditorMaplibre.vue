@@ -70,6 +70,8 @@ import { useHellfire } from "@/modules/maplibreview/useHellfire";
 import { useScenarioRouting } from "@/modules/scenarioeditor/useScenarioRouting";
 import { useMapLibreRoutingPreview } from "@/geo/routing/mapLibreRoutingPreview";
 import { useScenarioEvents } from "@/modules/scenarioeditor/scenarioEvents";
+import ScenarioPresenter from "@/modules/scenarioeditor/presenter/ScenarioPresenter.vue";
+import { usePresenterStore } from "@/stores/presenterStore";
 import { detailsOverlayClearance } from "@/modules/scenarioeditor/detailsPanelLayout";
 
 const props = defineProps<{
@@ -83,6 +85,7 @@ const emit = defineEmits<{
 const activeScenario = injectStrict(activeScenarioKey);
 const toolbarStore = useMainToolbarStore();
 useScenarioEvents();
+const presenter = usePresenterStore();
 
 const {
   store: { state },
@@ -308,7 +311,9 @@ function onCloseActiveDetailsPanel() {
     header-class="flex min-w-0 flex-none items-start justify-between sm:p-2"
     header-controls-class="bg-background/85 pointer-events-auto mr-1 flex min-w-0 max-w-[calc(100vw-0.5rem)] items-center gap-1 overflow-x-auto overflow-y-hidden whitespace-nowrap rounded-md p-1 shadow-sm mt-1 backdrop-blur-sm"
     :header-controls-style="headerControlsStyle"
-    :show-bottom-toolbar="Boolean(mlMap) && (ui.showToolbar || isDrawing)"
+    :show-bottom-toolbar="
+      Boolean(mlMap) && (ui.showToolbar || isDrawing) && !presenter.active
+    "
     @open-left-panel="ui.showLeftPanel = true"
     @close-left-panel="ui.showLeftPanel = false"
     @show-settings="emit('show-settings')"
@@ -352,6 +357,7 @@ function onCloseActiveDetailsPanel() {
       />
     </template>
     <template #footer-overlays>
+      <ScenarioPresenter v-if="mlMap && presenter.active" />
       <ViewshedDeck v-if="mlMap && viewshed.active" />
       <div
         v-if="referenceGrid.visible"

@@ -18,6 +18,7 @@ import type { MediaUpdate, ScenarioEventUpdate } from "@/types/internalModels";
 import DescriptionItem from "@/components/DescriptionItem.vue";
 import { renderMarkdown } from "@/composables/formatting";
 import DetailsPanelHeader from "@/modules/scenarioeditor/DetailsPanelHeader.vue";
+import { useEventCameraActions } from "@/modules/scenarioeditor/eventCamera";
 
 interface Props {
   eventId: EntityId;
@@ -29,6 +30,7 @@ const {
   time: { updateScenarioEvent, onGoToScenarioEventEvent },
 } = injectStrict(activeScenarioKey);
 const { getModalTimestamp } = injectStrict(timeModalKey);
+const onCameraAction = useEventCameraActions();
 
 const title = ref("");
 const isEditMode = ref(false);
@@ -79,6 +81,7 @@ function updateTitle(value: string) {
 }
 
 async function onAction(action: ScenarioEventAction) {
+  if (onCameraAction(action, props.eventId)) return;
   switch (action) {
     case "changeTime":
       const newTimestamp = await getModalTimestamp(scenarioEvent.value.startTime, {
@@ -131,7 +134,10 @@ const onFormSubmit = (eventUpdate: ScenarioEventUpdate) => {
         {{ formattedEventTime }}
       </template>
       <template #trailing>
-        <ScenarioEventDropdownMenu @action="onAction" />
+        <ScenarioEventDropdownMenu
+          :has-camera="!!scenarioEvent.where"
+          @action="onAction"
+        />
       </template>
     </DetailsPanelHeader>
     <div class="-mx-4">

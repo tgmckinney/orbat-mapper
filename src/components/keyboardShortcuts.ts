@@ -71,6 +71,16 @@ export const mapEditModeShortcuts: KeyboardCategory[] = [
     label: "Map view",
     shortcuts: [{ shortcut: [["o"]], description: "Start/stop orbiting the map center" }],
   },
+  {
+    label: "Presenter",
+    shortcuts: [
+      { shortcut: [["→"], ["space"], ["page down"]], description: "Next event" },
+      { shortcut: [["←"], ["page up"]], description: "Previous event" },
+      { shortcut: [["p"]], description: "Play/pause" },
+      { shortcut: [["f"]], description: "Full screen" },
+      { shortcut: [["esc"]], description: "Exit presenter" },
+    ],
+  },
 ];
 
 export const gridEditModeShortcuts: KeyboardCategory[] = [

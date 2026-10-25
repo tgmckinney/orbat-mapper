@@ -15,6 +15,7 @@ import KeyboardScenarioActions from "@/modules/scenarioeditor/KeyboardScenarioAc
 import ScenarioTimeline from "@/modules/scenarioeditor/ScenarioTimeline.vue";
 import UnitBreadcrumbs from "@/modules/scenarioeditor/UnitBreadcrumbs.vue";
 import { useUiStore } from "@/stores/uiStore";
+import { usePresenterStore } from "@/stores/presenterStore";
 import {
   useBottomLeftClearance,
   useOverlayBottomInset,
@@ -57,6 +58,8 @@ const emit = defineEmits<{
 }>();
 
 const ui = useUiStore();
+// Presenter mode keeps the map, the clock and the presenter overlay; the editing chrome goes.
+const presenter = usePresenterStore();
 const bottomToolbarRef = useTemplateRef("bottomToolbarRef");
 const bottomToolbarInset = useOverlayBottomInset(bottomToolbarRef);
 // The scale line and the location readout stay in the corner until they would run into
@@ -73,7 +76,10 @@ const bottomLeftClearance = useBottomLeftClearance(
   <div class="relative flex min-h-0 flex-auto flex-col">
     <div class="relative flex min-h-0 flex-1">
       <template v-if="!isMobile">
-        <MapEditorDesktopPanel v-if="showLeftPanel" @close="emit('closeLeftPanel')" />
+        <MapEditorDesktopPanel
+          v-if="showLeftPanel && !presenter.active"
+          @close="emit('closeLeftPanel')"
+        />
       </template>
       <div
         ref="mapAreaRef"
@@ -117,7 +123,7 @@ const bottomLeftClearance = useBottomLeftClearance(
             </div>
           </header>
           <Button
-            v-if="!isMobile && !showLeftPanel"
+            v-if="!isMobile && !showLeftPanel && !presenter.active"
             type="button"
             variant="secondary"
             class="pointer-events-auto absolute top-[45%] left-0 h-11 w-5 -translate-y-1/2 rounded-l-none rounded-r-md px-0"
@@ -137,7 +143,12 @@ const bottomLeftClearance = useBottomLeftClearance(
           </footer>
         </main>
         <MapEditorDetailsPanel
-          v-if="!isMobile && showDetailsPanel && ui.detailsPanelMode === 'overlay'"
+          v-if="
+            !isMobile &&
+            showDetailsPanel &&
+            !presenter.active &&
+            ui.detailsPanelMode === 'overlay'
+          "
           :mode="ui.detailsPanelMode"
           :bottom-inset="bottomToolbarInset"
           @close="emit('closeDetailsPanel')"
@@ -146,7 +157,12 @@ const bottomLeftClearance = useBottomLeftClearance(
         </MapEditorDetailsPanel>
       </div>
       <MapEditorDetailsPanel
-        v-if="!isMobile && showDetailsPanel && ui.detailsPanelMode === 'sidebar'"
+        v-if="
+          !isMobile &&
+          showDetailsPanel &&
+          !presenter.active &&
+          ui.detailsPanelMode === 'sidebar'
+        "
         :mode="ui.detailsPanelMode"
         @close="emit('closeDetailsPanel')"
       >
@@ -173,8 +189,8 @@ const bottomLeftClearance = useBottomLeftClearance(
       @keyup.s="emit('showPlaceSearch')"
     />
     <slot name="after-keyboard" />
-    <UnitBreadcrumbs v-if="ui.showOrbatBreadcrumbs && !isMobile" />
-    <ScenarioTimeline v-if="ui.showTimeline" />
+    <UnitBreadcrumbs v-if="ui.showOrbatBreadcrumbs && !isMobile && !presenter.active" />
+    <ScenarioTimeline v-if="ui.showTimeline && !presenter.active" />
     <slot name="modals" />
   </div>
 </template>
