@@ -1,0 +1,195 @@
+<!doctype html>
+<!-- georgewyrd fork only: the help page the app's help links point to (see vite.georgewyrd.ts). -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Help — Battles on the map — georgewyrd</title>
+<meta name="description" content="How to use Battles on the map: build an order of battle, place units, play a scenario over time, import, export and share.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+:root {
+  --bg: #fbf9f5; --fg: #1d1b18; --muted: #6b655c; --line: #e2ddd3; --card: #f2eee6; --accent: #7a1f1f;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #161513; --fg: #ece8e1; --muted: #a39c90; --line: #34312c; --card: #201e1b; --accent: #f0a493; }
+}
+* { box-sizing: border-box; }
+html { scroll-padding-top: 16px; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.6 var(--serif); }
+a { color: var(--accent); }
+header.site, main, footer.site { max-width: 1040px; margin: 0 auto; padding: 0 16px; }
+header.site { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: baseline; padding-top: 14px; padding-bottom: 14px;
+  border-bottom: 1px solid var(--line); font: 14px var(--sans); }
+header.site .brand { font: 700 18px var(--serif); color: var(--fg); text-decoration: none; margin-right: auto; }
+header.site nav { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+header.site nav a { color: var(--muted); text-decoration: none; }
+header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent); }
+.intro { padding: 32px 0 8px; }
+.kicker { font: 600 12px/1.4 var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+h1 { font-size: clamp(32px, 5vw, 46px); line-height: 1.1; margin: 6px 0 10px; }
+.lede { font-size: 19px; max-width: 42em; margin: 0; }
+.cols { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 40px; align-items: start; margin-top: 24px; }
+@media (max-width: 820px) { .cols { grid-template-columns: 1fr; gap: 8px; } }
+.toc { position: sticky; top: 16px; font: 14px/1.5 var(--sans); }
+@media (max-width: 820px) { .toc { position: static; } }
+.toc ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; }
+.toc a { color: var(--muted); text-decoration: none; }
+.toc a:hover { color: var(--accent); }
+section { border-top: 1px solid var(--line); padding: 18px 0 8px; }
+section:first-child { border-top: 0; padding-top: 0; }
+h2 { font-size: 24px; margin: 0 0 8px; }
+h3 { font: 600 15px var(--sans); margin: 16px 0 4px; }
+p, li { max-width: 42em; }
+p { margin: 0 0 12px; }
+ul, ol.steps { padding-left: 1.2em; margin: 0 0 12px; }
+.note { background: var(--card); border-left: 3px solid var(--accent); padding: 10px 14px; border-radius: 4px; font: 15px/1.5 var(--sans); }
+kbd, .ui { font: 600 .88em var(--sans); }
+footer.site { margin-top: 48px; padding-top: 16px; padding-bottom: 32px; border-top: 1px solid var(--line);
+  color: var(--muted); font: 13px/1.5 var(--sans); }
+</style>
+</head>
+<body>
+<header class="site"><a class="brand" href="https://www.georgewyrd.com">georgewyrd</a>
+<nav><a href="https://battles.georgewyrd.com/">Battles</a><a href="https://www.georgewyrd.com/scenarios/">Scenarios</a>
+<a href="https://index.georgewyrd.com/">Wargame index</a><a href="/" aria-current="page">Maps</a></nav></header>
+
+<main>
+<div class="intro">
+  <div class="kicker">Battles on the map · Help</div>
+  <h1>How it works</h1>
+  <p class="lede">Build an order of battle, put the units on the map, and move them through time. Everything you make
+  is kept in your browser; nothing leaves your computer unless you export or share it.</p>
+</div>
+
+<div class="cols">
+<nav class="toc" aria-label="Contents"><ol>
+  <li><a href="#getting-started">Getting started</a></li>
+  <li><a href="#map-edit-mode">The map</a></li>
+  <li><a href="#chart-edit-mode">Organization charts</a></li>
+  <li><a href="#grid-edit-mode">Grid editing</a></li>
+  <li><a href="#text-to-orbat">Text to ORBAT</a></li>
+  <li><a href="#import-data">Import</a></li>
+  <li><a href="#export-data">Export</a></li>
+  <li><a href="#sharing-scenarios">Share</a></li>
+  <li><a href="#storage">Saving and backups</a></li>
+  <li><a href="#custom-symbols">Custom symbols</a></li>
+</ol></nav>
+
+<div>
+<section id="getting-started">
+  <h2>Getting started</h2>
+  <p>Open one of the battle maps on the <a href="/">front page</a> to see how a finished scenario looks, or choose
+  <span class="ui">Create new scenario</span>.</p>
+  <ol class="steps">
+    <li>Give the scenario a name and a description.</li>
+    <li>Add the sides and their top units. Each side's <em>standard identity</em> (friend, hostile, neutral…) sets the
+    colour and shape of its symbols; you can change icons and echelons later.</li>
+    <li>Set the start time and time zone. For a historical battle, use the real date and the local time zone.</li>
+    <li>Choose the symbology standard (MIL-STD-2525 or APP-6) and click <span class="ui">Create scenario</span>.</li>
+  </ol>
+</section>
+
+<section id="map-edit-mode">
+  <h2>The map</h2>
+  <p>The editor has a sidebar on the left, the map in the middle and a details panel on the right.</p>
+  <h3>Sidebar</h3>
+  <ul>
+    <li><b>ORBAT</b>: the units of each side as a tree. Drag units to reorder them or change their parent.</li>
+    <li><b>Layers</b>: map features you draw, and background layers.</li>
+    <li><b>Graphics</b>: control measures (boundaries, phase lines, objectives and the like) to place on the map.</li>
+    <li><b>Settings</b>: scenario settings, symbol sizes and custom symbols.</li>
+  </ul>
+  <h3>Units on the map</h3>
+  <p>Drag a unit from the ORBAT onto the map to place it at the current time. Move the time forward with the timeline at
+  the bottom and drag the unit again: its track between the two times is recorded, and playback animates it.
+  Right-click the map or a unit for more actions.</p>
+  <h3>Map toolbar</h3>
+  <p>Measure distances and areas, show unit tracks, draw features and switch on a reference grid. Range rings, orbit
+  mode and narration (text or recorded audio attached to scenario events) are in the map's controls.</p>
+</section>
+
+<section id="chart-edit-mode">
+  <h2>Organization charts</h2>
+  <p>Chart mode turns a unit hierarchy into an organization chart. Pick the root unit in the ORBAT panel, then use
+  <span class="ui">Chart settings</span> for page size, layout, labels, symbols and connectors.
+  <span class="ui">Export chart</span> saves it as PNG (1×–3×) or SVG.</p>
+</section>
+
+<section id="grid-edit-mode">
+  <h2>Grid editing</h2>
+  <p>Grid mode shows the units as a spreadsheet, for editing names, symbols, equipment and personnel quickly across many
+  units at once.</p>
+</section>
+
+<section id="text-to-orbat">
+  <h2>Text to ORBAT</h2>
+  <p>Type or paste an order of battle as indented text, one unit per line; indentation makes the hierarchy. Unit types
+  and echelons are recognised from the names ("1st Infantry Division", "2/34th Line Regiment"), and you can add your own
+  patterns. The result can be copied, dragged into a scenario, opened in the editor or exported.</p>
+</section>
+
+<section id="import-data">
+  <h2>Import</h2>
+  <p>Choose <span class="ui">Import data</span> from the <span class="ui">File</span> menu, or drop a file on the map.
+  Load from a file, a URL, a scenario kept in your browser, or pasted text; the format is usually detected for you.</p>
+  <ul>
+    <li><b>Scenario files</b> (<code>.json</code>): import a side or group into the current scenario. By default, units
+    with the same ID are updated rather than duplicated; <span class="ui">Replace entire side/group</span> removes units
+    the file doesn't have.</li>
+    <li><b>GeoJSON</b>, <b>MilX</b>, and <b>Excel/CSV</b> tables (map the columns, then build the hierarchy).</li>
+    <li>ORBAT Builder and Order of Battle Generator files, and DATE force structures.</li>
+    <li><b>KML/KMZ</b> files load as map layers.</li>
+  </ul>
+</section>
+
+<section id="export-data">
+  <h2>Export</h2>
+  <p>Choose <span class="ui">Export scenario</span> from the <span class="ui">File</span> menu. Formats: scenario file
+  (<code>.json</code>), GeoJSON, KML/KMZ, MilX and XLSX.</p>
+  <p>For a scenario file you choose which sides, groups and layers go in, so you can give each player only what their
+  side would know. A <b>snapshot</b> of a group keeps only where its units are at that moment, not their plans or
+  history: useful for showing a side the enemy units it has spotted. Save your choices as a preset to reuse them each
+  turn.</p>
+</section>
+
+<section id="sharing-scenarios">
+  <h2>Share</h2>
+  <h3>Share online</h3>
+  <ol class="steps">
+    <li>Open the scenario, then <span class="ui">File</span> → <span class="ui">Share scenario online…</span></li>
+    <li>Optionally switch on <span class="ui">Encrypt scenario</span> and set a password. The scenario is encrypted in
+    your browser (AES-GCM); only people with the password can open it. The description is not encrypted.</li>
+    <li>Click <span class="ui">Upload and generate link</span>, then <span class="ui">Copy Link</span>.</li>
+  </ol>
+  <h3>Share as a URL</h3>
+  <p>Small scenarios can be packed into the link itself, with nothing uploaded. Very long links may not survive email or
+  chat, so use online sharing for anything large.</p>
+</section>
+
+<section id="storage">
+  <h2>Saving and backups</h2>
+  <p>Your scenarios are kept in your browser's storage on this computer, not online.</p>
+  <p class="note"><b>Your browser's storage is not a backup.</b> Clearing site data, or the browser running short of
+  space, deletes your scenarios. Download them regularly: <span class="ui">File</span> → <span class="ui">Save</span>
+  writes a <code>.json</code> file you can open again by dropping it on the page.</p>
+</section>
+
+<section id="custom-symbols">
+  <h2>Custom symbols</h2>
+  <p>When the standard military symbols aren't enough, add your own: <span class="ui">Settings</span> tab →
+  <span class="ui">Custom unit symbols</span> → <span class="ui">Add</span>. Give a name and an image as a URL or a data
+  URL. PNG or SVG with a transparent background works best. A data URL stores the image inside the scenario file, which
+  keeps the file self-contained but makes it larger; an ordinary URL must allow cross-site loading, and you need
+  permission to use the image.</p>
+</section>
+</div>
+</div>
+</main>
+
+<footer class="site"><p>Part of <a href="https://www.georgewyrd.com">georgewyrd</a>: battles, orders of battle, maps and
+scenarios for wargamers. Map engine released under the <a href="/LICENSE.txt">MIT licence</a>.</p></footer>
+</body>
+</html>
