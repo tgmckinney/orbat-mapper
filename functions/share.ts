@@ -13,7 +13,7 @@ interface Env {
  * - https://*.orbat-mapper.pages.dev (Cloudflare Pages previews)
  * - https://orbat.georgewyrd.com and https://*.orbat-georgewyrd.pages.dev (georgewyrd fork)
  */
-function isAllowedOrigin(origin: string | null): boolean {
+export function isAllowedOrigin(origin: string | null): boolean {
   if (!origin) return false;
   if (origin === "https://orbat-mapper.app") return true;
   if (origin === "https://orbat.georgewyrd.com") return true;

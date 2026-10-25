@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, toRef, watch } from "vue";
 import { useEventListener, useFullscreen } from "@vueuse/core";
 import {
   IconClose,
@@ -7,14 +7,19 @@ import {
   IconFullscreenExit,
   IconPause,
   IconPlay,
+  IconReplay,
   IconSkipNext,
   IconSkipPrevious,
+  IconVolumeHigh,
+  IconVolumeOff,
 } from "@iconify-prerendered/vue-mdi";
 import { injectStrict } from "@/utils";
 import { activeScenarioKey } from "@/components/injects";
 import { inputEventFilter } from "@/components/helpers";
 import { Button } from "@/components/ui/button";
 import { renderMarkdown } from "@/composables/formatting";
+import { formatDuration } from "@/modules/scenarioeditor/narration/narration";
+import { useNarrationPlayer } from "@/modules/scenarioeditor/presenter/useNarrationPlayer";
 import { usePresenter } from "@/modules/scenarioeditor/presenter/usePresenter";
 import { PRESENTER_DWELL_CHOICES, usePresenterStore } from "@/stores/presenterStore";
 import { useSelectedItems } from "@/stores/selectedStore";
@@ -34,6 +39,10 @@ const p = usePresenter(
   },
   { transitionMs: reducedMotion ? 0 : 1200 },
 );
+
+const narrator = useNarrationPlayer({
+  muted: toRef(presenter, "narrationMuted"),
+});
 
 const rootRef = ref<HTMLElement | null>(null);
 // Full screen takes the map area, so the map and this overlay stay and the editor's
@@ -59,47 +68,69 @@ const description = computed(() =>
     (current.value ? current.value.description : store.state.info.description) || "",
   ),
 );
+const narration = computed(() => current.value?.narration);
+const hasNarration = computed(() => p.events.value.some((e) => e.narration?.url));
 const progress = computed(() =>
   p.count.value ? (p.index.value + 1) / p.count.value : 0,
 );
 
-let timer: ReturnType<typeof setTimeout> | undefined;
+// Bumped to drop a pending auto-advance.
+let scheduleRun = 0;
 
 function clearTimer() {
-  if (timer) clearTimeout(timer);
-  timer = undefined;
+  scheduleRun++;
 }
 
-// While playing, each event stays up for the dwell time, then the next one comes.
-function schedule() {
-  clearTimer();
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/** Move with `move`, then play the new event's narration. */
+async function step(move: () => Promise<boolean>) {
+  narrator.stop();
+  if (await move()) narrator.play(narration.value);
+}
+
+// While playing, each event stays up for the dwell time and until its narration has
+// finished, then the next one comes.
+async function schedule() {
+  const run = ++scheduleRun;
   if (!presenter.playing) return;
   if (p.atEnd.value) {
     presenter.playing = false;
     return;
   }
-  timer = setTimeout(async () => {
-    await p.next();
-    schedule();
-  }, presenter.dwellSeconds * 1000);
+  await Promise.all([delay(presenter.dwellSeconds * 1000), narrator.settled()]);
+  if (run !== scheduleRun || !presenter.playing) return;
+  await step(p.next);
+  if (run === scheduleRun) schedule();
 }
 
 async function next() {
   clearTimer();
-  await p.next();
+  await step(p.next);
   schedule();
 }
 
 async function prev() {
   clearTimer();
-  await p.prev();
+  await step(p.prev);
   schedule();
 }
 
 async function togglePlay() {
   presenter.playing = !presenter.playing;
-  if (presenter.playing && p.index.value < 0) await next();
-  else schedule();
+  if (presenter.playing && p.index.value < 0) return next();
+  // Starting on an event: let its narration run before moving on.
+  if (presenter.playing && !narrator.playing.value) narrator.play(narration.value);
+  schedule();
+}
+
+function replay() {
+  if (narration.value) narrator.play(narration.value);
+}
+
+function toggleMute() {
+  presenter.narrationMuted = !presenter.narrationMuted;
+  if (!presenter.narrationMuted) replay();
 }
 
 function exit() {
@@ -120,6 +151,8 @@ useEventListener(
       ArrowLeft: prev,
       PageUp: prev,
       p: togglePlay,
+      m: toggleMute,
+      r: replay,
       f: toggleFullscreen,
       Escape: exit,
     };
@@ -140,6 +173,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   clearTimer();
+  narrator.stop();
   p.cancel();
   if (isFullscreen.value) exitFullscreen();
   presenter.stop(); // also when the editor itself closes
@@ -178,6 +212,38 @@ onBeforeUnmount(() => {
         <p v-if="when" class="text-muted-foreground text-xs tabular-nums">{{ when }}</p>
         <h2 class="text-lg leading-snug font-semibold">{{ title }}</h2>
         <p v-if="subTitle" class="text-muted-foreground text-sm">{{ subTitle }}</p>
+        <div
+          v-if="narration?.url"
+          class="text-muted-foreground mt-2 flex items-center gap-2 text-xs"
+          data-narration
+        >
+          <IconVolumeOff
+            v-if="presenter.narrationMuted"
+            class="size-4"
+            aria-hidden="true"
+          />
+          <IconVolumeHigh v-else class="size-4" aria-hidden="true" />
+          <span v-if="presenter.narrationMuted">Narration muted</span>
+          <template v-else>
+            <span class="sr-only">Narration</span>
+            <div class="bg-muted h-1 w-24 overflow-hidden rounded-full">
+              <div
+                class="bg-primary h-full"
+                :style="{ width: `${narrator.progress.value * 100}%` }"
+              />
+            </div>
+            <span class="tabular-nums">{{ formatDuration(narration.duration) }}</span>
+          </template>
+          <button
+            type="button"
+            class="hover:text-foreground rounded p-0.5"
+            title="Replay narration (R)"
+            @click="replay"
+          >
+            <IconReplay class="size-4" aria-hidden="true" />
+            <span class="sr-only">Replay narration</span>
+          </button>
+        </div>
       </header>
       <div
         class="prose prose-sm dark:prose-invert min-h-0 max-w-none flex-auto overflow-y-auto px-4 pt-2 pb-3 [&_table]:block [&_table]:overflow-x-auto [&_table]:text-xs [&_td]:px-1.5 [&_th]:px-1.5"
@@ -242,6 +308,24 @@ onBeforeUnmount(() => {
             </option>
           </select>
         </label>
+        <Button
+          v-if="hasNarration"
+          variant="ghost"
+          size="icon-sm"
+          :title="
+            presenter.narrationMuted ? 'Unmute narration (M)' : 'Mute narration (M)'
+          "
+          :aria-pressed="presenter.narrationMuted"
+          @click="toggleMute"
+        >
+          <IconVolumeOff
+            v-if="presenter.narrationMuted"
+            class="size-5"
+            aria-hidden="true"
+          />
+          <IconVolumeHigh v-else class="size-5" aria-hidden="true" />
+          <span class="sr-only">Mute narration</span>
+        </Button>
         <Button
           variant="ghost"
           size="icon-sm"

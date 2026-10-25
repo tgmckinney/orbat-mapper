@@ -154,6 +154,15 @@ export interface Media {
   creditsUrl?: string;
 }
 
+/** A recorded voice-over for a scenario event, played in presenter mode. */
+export interface Narration {
+  url: string;
+  /** Length in seconds. Browser recordings often lack it in the file itself. */
+  duration?: number;
+  mimeType?: string;
+  transcript?: string;
+}
+
 export interface UnitEquipment {
   count: number;
   name: string;
@@ -236,6 +245,7 @@ export interface ScenarioEventDescription {
   subTitle?: string;
   description?: string;
   media?: Media[];
+  narration?: Narration;
   externalUrl?: string;
 }
 

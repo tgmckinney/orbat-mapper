@@ -19,6 +19,8 @@ import DescriptionItem from "@/components/DescriptionItem.vue";
 import { renderMarkdown } from "@/composables/formatting";
 import DetailsPanelHeader from "@/modules/scenarioeditor/DetailsPanelHeader.vue";
 import { useEventCameraActions } from "@/modules/scenarioeditor/eventCamera";
+import NarrationPanel from "@/modules/scenarioeditor/narration/NarrationPanel.vue";
+import type { Narration } from "@/types/scenarioModels";
 
 interface Props {
   eventId: EntityId;
@@ -119,6 +121,10 @@ function updateMedia(mediaUpdate: MediaUpdate) {
   isEditMediaMode.value = false;
 }
 
+function updateNarration(narration: Narration | undefined) {
+  updateScenarioEvent(props.eventId, { narration });
+}
+
 const onFormSubmit = (eventUpdate: ScenarioEventUpdate) => {
   updateScenarioEvent(props.eventId, eventUpdate);
   toggleEditMode();
@@ -173,6 +179,10 @@ const onFormSubmit = (eventUpdate: ScenarioEventUpdate) => {
                 >{{ scenarioEvent.externalUrl }}</a
               ></DescriptionItem
             >
+            <NarrationPanel
+              :narration="scenarioEvent.narration"
+              @update="updateNarration"
+            />
           </div>
         </TabsContent>
         <TabsContent value="1" v-if="ui.debugMode" class="mx-4">

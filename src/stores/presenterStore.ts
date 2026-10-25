@@ -9,6 +9,7 @@ export const usePresenterStore = defineStore("presenterStore", () => {
   const playing = ref(false);
   // Seconds an event stays on screen before auto-advance moves on.
   const dwellSeconds = useLocalStorage("presenterDwellSeconds", 8);
+  const narrationMuted = useLocalStorage("presenterNarrationMuted", false);
 
   function start() {
     active.value = true;
@@ -25,5 +26,5 @@ export const usePresenterStore = defineStore("presenterStore", () => {
     else start();
   }
 
-  return { active, playing, dwellSeconds, start, stop, toggle };
+  return { active, playing, dwellSeconds, narrationMuted, start, stop, toggle };
 });
