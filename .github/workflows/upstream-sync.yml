@@ -20,6 +20,8 @@ env:
   UPSTREAM: https://github.com/orbat-mapper/orbat-mapper.git
   BRANCH: upstream-sync
   GH_TOKEN: ${{ github.token }}
+  # In a fork, gh defaults to the parent repo; pin it to ours.
+  GH_REPO: ${{ github.repository }}
 
 jobs:
   sync:
